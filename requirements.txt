@@ -1,6 +1,6 @@
 os
-import logging
-moviepy.editor import VideoFileClip
+logging
+moviepy.editor
 eyed3
 PyPDF2
 rarfile
