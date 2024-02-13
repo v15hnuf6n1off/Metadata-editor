@@ -1,3 +1,4 @@
+python 3.12
 os
 logging
 moviepy 1.0.3
