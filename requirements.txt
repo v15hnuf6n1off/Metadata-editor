@@ -1,5 +1,9 @@
-moviepy
-eyed3
-PyPDF2
-rarfile
-zipfile
+# --- For-Bot-Working --------- #
+pyrogram
+TgCrypto
+Pyromod
+# --- For-Database ------------ #
+pymongo
+dnspython
+# --- For-Web-Response ------- #
+aiohttp
