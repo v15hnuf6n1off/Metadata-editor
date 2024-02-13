@@ -1,7 +1,7 @@
 os
 logging
-moviepy.editor
-eyed3
+moviepy 1.0.3
+eyed3 0.9.4
 PyPDF2
 rarfile
 zipfile
