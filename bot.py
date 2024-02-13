@@ -1,78 +1,79 @@
-import os
-import logging
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from moviepy.editor import VideoFileClip
-import eyed3
-import PyPDF2
-import rarfile
-import zipfile
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pymongo import MongoClient
 
-# Set up logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# Create a MongoClient to the running MongoDB instance
+mongo_client = MongoClient('mongodb://localhost:27017/')
 
-# Your Telegram bot token
-TOKEN = '6536175076:AAGzf8AHlGni9q_cEAYzZ54s-Im-Gqd1CJU'
+# Getting a Database
+db = mongo_client['database_name']
 
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("Welcome! Send me a file (video, audio, document, etc.) to edit its metadata.")
+# Getting a Collection
+collection = db['collection_name']
 
-def handle_document(update: Update, context: CallbackContext) -> None:
-    file = update.message.document.get_file()
-    file.download('temp_file')
+app = Client("my_bot", bot_token="YOUR_BOT_TOKEN", api_id="YOUR_API_ID", api_hash="YOUR_API_HASH")
 
-    # Determine the file type
-    file_extension = os.path.splitext(file.file_path)[-1].lower()
+# Start command
+@app.on_message(filters.command("start"))
+def start(client, message):
+    # Save user id and profile link to database
+    user_id = message.from_user.id
+    profile_link = message.from_user.mention
+    collection.insert_one({"user_id": user_id, "profile_link": profile_link})
+    # Send user id and profile link to log channel
+    # Welcome the user
+    message.reply_text("Welcome to the bot!")
 
-    if file_extension in ['.mp4', '.mkv', '.avi']:
-        # Edit video metadata
-        clip = VideoFileClip('temp_file')
-        # Modify metadata here (e.g., clip.set_duration(), clip.set_audio(), etc.)
-        # Save the updated video
-        clip.write_videofile('edited_video.mp4')
-        update.message.reply_document(document=open('edited_video.mp4', 'rb'))
+# Inline commands
+@app.on_message(filters.command("edit metadata"))
+def edit_metadata(client, message):
+    # Edit metadata of the given file
+    pass
 
-    elif file_extension in ['.mp3', '.wav']:
-        # Edit audio metadata
-        audio = eyed3.load('temp_file')
-        # Modify metadata here (e.g., audio.tag.artist, audio.tag.album, etc.)
-        # Save the updated audio
-        audio.tag.save()
-        update.message.reply_document(document=open('temp_file', 'rb'))
+@app.on_message(filters.command("rename"))
+def rename(client, message):
+    # Rename the title of the given file
+    pass
 
-    elif file_extension == '.pdf':
-        # Edit PDF metadata using PyPDF2
-        # Modify metadata here (e.g., pdf.addMetadata(), pdf.setPageLabels(), etc.)
-        # Save the updated PDF
-        update.message.reply_document(document=open('temp_file', 'rb'))
+@app.on_message(filters.command("convert"))
+def convert(client, message):
+    # Convert the given file to another format
+    pass
 
-    elif file_extension in ['.rar', '.zip']:
-        # Extract the archive
-        with rarfile.RarFile('temp_file', 'r') as rar:
-            rar.extractall('extracted_files')
+@app.on_message(filters.command("extract"))
+def extract(client, message):
+    # Extract the video or audio from the given file
+    pass
 
-        # Edit metadata of individual files within the archive
-        # Modify metadata here (e.g., using eyed3 for audio files)
-        # Re-archive the files
-        with rarfile.RarFile('edited_archive.rar', 'w') as edited_rar:
-            for root, _, files in os.walk('extracted_files'):
-                for file in files:
-                    edited_rar.write(os.path.join(root, file))
+# Commands
+@app.on_message(filters.command("set_thumb"))
+def set_thumb(client, message):
+    # Set custom thumbnail
+    pass
 
-        update.message.reply_document(document=open('edited_archive.rar', 'rb'))
+@app.on_message(filters.command("del_thumb"))
+def del_thumb(client, message):
+    # Delete the custom thumbnail
+    pass
 
-    else:
-        update.message.reply_text("Unsupported file type. Please send a valid file.")
+@app.on_message(filters.command("set_caption"))
+def set_caption(client, message):
+    # Set custom caption
+    pass
 
-def main() -> None:
-    updater = Updater(TOKEN)
-    dispatcher = updater.dispatcher
+@app.on_message(filters.command("del_caption"))
+def del_caption(client, message):
+    # Remove the custom caption
+    pass
 
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(MessageHandler(Filters.document.mime_type("video/*") | Filters.document.mime_type("audio/*") | Filters.document.mime_type("application/pdf") | Filters.document.mime_type("application/x-rar-compressed") | Filters.document.mime_type("application/zip"), handle_document))
+@app.on_message(filters.command("users"))
+def users(client, message):
+    # Show how many users are using the bot (only for admin use)
+    pass
 
-    updater.start_polling()
-    updater.idle()
+@app.on_message(filters.command("broadcast"))
+def broadcast(client, message):
+    # Broadcast message to user (only for admin use)
+    pass
 
-if __name__ == '__main__':
-    main()
+app.run()
