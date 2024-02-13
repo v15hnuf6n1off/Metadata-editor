@@ -3,15 +3,15 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pymongo import MongoClient
 
 # Create a MongoClient to the running MongoDB instance
-mongo_client = MongoClient('mongodb://localhost:27017/')
+mongo_client = MongoClient('mongodb+srv://file:link@cluster0.jth5g3y.mongodb.net/?retryWrites=true&w=majority')
 
 # Getting a Database
-db = mongo_client['database_name']
+db = mongo_client['Cluster0']
 
 # Getting a Collection
-collection = db['collection_name']
+collection = db['metedit']
 
-app = Client("my_bot", bot_token="YOUR_BOT_TOKEN", api_id="YOUR_API_ID", api_hash="YOUR_API_HASH")
+app = Client("my_bot", bot_token="6536175076:AAGzf8AHlGni9q_cEAYzZ54s-Im-Gqd1CJU", api_id="21165589", api_hash="8cc762f4873e84a7cf0cbfd66a07244b")
 
 # Start command
 @app.on_message(filters.command("start"))
