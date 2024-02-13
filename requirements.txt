@@ -2,4 +2,4 @@ moviepy
 eyed3
 PyPDF2
 rarfile
-zipfile
+https://github.com/python/cpython/tree/3.8/Lib/zipfile.py
