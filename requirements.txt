@@ -1,0 +1,7 @@
+os
+import logging
+moviepy.editor import VideoFileClip
+eyed3
+PyPDF2
+rarfile
+zipfile
