@@ -1,6 +1,6 @@
 python
-moviepy 1.0.3
-eyed3 0.9.4
+moviepy
+eyed3
 PyPDF2
 rarfile
 zipfile
